@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+:root {
+  --primary-color: #087644;
+  --secondary-color: #10574c;
+  --text-color: white;
+  --btn-primary-color: #2d8757;
+  --btn-secondary-color: #29629b;
+  --bg-color: #001d18eb;
+}
+
+.btn-primary {
+  @apply mx-auto block cursor-pointer rounded-xl bg-[var(--btn-primary-color)] px-6 py-1.5 text-white transition duration-300 hover:bg-emerald-600;
+  /* @apply mt-4 cursor-pointer rounded-[20px] bg-[var(--btn-primary-color)] px-5 py-[5px] text-[var(--text-color)] transition-all duration-200 ease-in-out hover:bg-[var(--primary-color)] active:scale-95; */
+}
+
+.btn-secondary {
+  @apply mt-4 cursor-pointer rounded-[20px] bg-[var(--btn-secondary-color)] px-5 py-[5px] text-[var(--text-color)] transition-colors duration-200 ease-in-out hover:bg-[var(--btn-primary-color)];
+}
