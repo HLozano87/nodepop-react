@@ -1,13 +1,15 @@
-import { CreateUser } from "./pages/signup";
+import LoginPage from "./pages/auth/login";
+import { CreateUserPage } from "./pages/signup";
+import { Routes, Route } from "react-router";
 
 function App() {
   return (
-    <>
-    <h1 className="flex justify-center pt-6 text-3xl text-green-800">
-      Hola React.
-    </h1>
-    <CreateUser />
-    </>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<CreateUserPage />} />
+
+      </Routes>
+
   );
 }
 
