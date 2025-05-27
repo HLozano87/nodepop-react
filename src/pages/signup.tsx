@@ -1,27 +1,15 @@
-import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Button } from "../components/button";
 import { createUser } from "../api/client";
 import { useNavigate } from "react-router";
+import { useMessages } from "../components/hooks/useMessage";
+import { Notifications } from "../components/notifications";
 
-export const CreateUserPage = () => {
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+export const SignUpPage = () => {
+const { successMessage, errorMessage, showSuccess, showError } =
+    useMessages();
 
-  //TODO Reutilizations effect to show notifications
   //TODO Component form
-  useEffect(() => {
-    if (errorMessage) {
-      const timer = setTimeout(() => setErrorMessage(""), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMessage]);
-
-  useEffect(() => {
-    if (successMessage) {
-      const timer = setTimeout(() => setSuccessMessage(""), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage]);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -42,23 +30,21 @@ export const CreateUserPage = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSuccessMessage("");
-    setErrorMessage("");
+
     if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("Las contraseñas no coinciden.");
+      showError("Las contraseñas no coinciden.");
       return;
     }
     try {
       const { confirmPassword, ...dataSend } = formData;
       await createUser(dataSend);
-      setSuccessMessage("Usuario creado con éxito");
+      showSuccess("Usuario creado con éxito");
 
       setTimeout(() => {
-        navigate(`/login`, { replace: true });
+        navigate(`/adverts`, { replace: true });
       }, 2000);
     } catch (error) {
-      setErrorMessage("Error al crear el usuario.");
-      console.error(error);
+      showError("Error al crear el usuario.");
     }
   };
 
@@ -68,6 +54,7 @@ export const CreateUserPage = () => {
         Registro
       </h2>
 
+      <Notifications successMessage={successMessage} errorMessage={errorMessage} />
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label
@@ -159,17 +146,6 @@ export const CreateUserPage = () => {
             onChange={handleChange}
           />
         </div>
-
-        {errorMessage && (
-          <div className="mb-4 rounded-xl bg-red-100 px-4 py-2 text-center text-sm text-red-700">
-            {errorMessage}
-          </div>
-        )}
-        {successMessage && (
-          <div className="mb-4 rounded-xl bg-green-100 px-4 py-2 text-center text-sm text-green-700">
-            {successMessage}
-          </div>
-        )}
 
         <Button type="submit" variant="primary">
           Crear

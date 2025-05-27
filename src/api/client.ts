@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { CreatedUser, CreatedUserResponse } from "../utils/auth";
+import type { SignUp, AuthUser } from "../pages/auth/types-auth";
 import { USER_ENDPOINTS } from "../utils/endpoints";
 
 export const apiClient = axios.create({
@@ -9,9 +9,9 @@ export const apiClient = axios.create({
   },
 });
 
-export const createUser = async (credentials: CreatedUser) => {
+export const createUser = async (credentials: SignUp) => {
   try {
-    const response = await apiClient.post<CreatedUserResponse>(
+    const response = await apiClient.post<AuthUser>(
       USER_ENDPOINTS.SIGNUP,
       credentials,
     );

@@ -2,8 +2,15 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { login } from "./service";
 import { Button } from "../../components/button";
 import { storage } from "../../utils/storage";
+import { useNavigate } from "react-router";
+import { Notifications } from "../../components/notifications";
+import { useMessages } from "../../components/hooks/useMessage";
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const { successMessage, errorMessage, showSuccess, showError } =
+    useMessages();
+
   const [credential, setCredentials] = useState(() => {
     const saved = storage.get("auth");
     if (saved) {
@@ -14,8 +21,8 @@ function LoginPage() {
           password: "",
           remember: true,
         };
-      } catch {
-        // throw new Error('error')
+      } catch (error) {
+        showError(errorMessage);
       }
     }
     return {
@@ -28,19 +35,19 @@ function LoginPage() {
   async function handleForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
-      await login(credential);
+      const token = await login(credential);
       if (credential.remember) {
-        storage.set(
-          "auth",
-          JSON.stringify({
-            email: credential.email,
-            password: credential.password,
-          }),
-        );
+        storage.set("auth", token);
       } else {
         storage.remove("auth");
       }
-    } catch (error) {}
+      showSuccess("¡Login exitoso!");
+      setTimeout(() => {
+        navigate("/signup");
+      }, 2000);
+    } catch (error) {
+      showError("Credenciales incorrectas.");
+    }
   }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -60,6 +67,10 @@ function LoginPage() {
 
       <form onSubmit={handleForm} className="space-y-5">
         <div>
+          <Notifications
+            successMessage={successMessage}
+            errorMessage={errorMessage}
+          />
           <label
             htmlFor="email"
             className="block text-sm font-medium text-emerald-900"
