@@ -7,5 +7,5 @@ export const USER_ENDPOINTS = {
 export const ADVERT_ENDPOINT = {
   TAGS: "/api/v1/adverts/tags",
   ADVERT: "/api/v1/adverts",
-  ADVERT_ID: "/api/v1/adverts/{id}",
+  ADVERT_ID: (id: string) => `/api/v1/adverts/${id}`,
 };

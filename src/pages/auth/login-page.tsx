@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 import { Notifications } from "../../components/notifications";
 import { useMessages } from "../../components/hooks/useMessage";
 
-function LoginPage() {
+export const LoginPage = () => {
   const navigate = useNavigate();
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
@@ -43,7 +43,7 @@ function LoginPage() {
       }
       showSuccess("¡Login exitoso!");
       setTimeout(() => {
-        navigate("/signup");
+        navigate("/adverts");
       }, 2000);
     } catch (error) {
       showError("Credenciales incorrectas.");
