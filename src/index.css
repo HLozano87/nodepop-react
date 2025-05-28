@@ -17,3 +17,7 @@
 .btn-secondary {
   @apply mt-4 cursor-pointer rounded-[20px] bg-[var(--btn-secondary-color)] px-5 py-[5px] text-[var(--text-color)] transition-colors duration-200 ease-in-out hover:bg-[var(--btn-primary-color)];
 }
+
+.required {
+  @apply text-red-600;
+}

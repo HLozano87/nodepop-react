@@ -121,8 +121,7 @@ export const LoginPage = () => {
             Recordarme.
           </label>
         </div>
-        <div id="notifications"></div>
-        <div className="loader hidden"></div>
+
         <Button type="submit" variant="primary">
           Entrar
         </Button>
