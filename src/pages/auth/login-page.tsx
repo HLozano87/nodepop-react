@@ -43,7 +43,7 @@ export const LoginPage = () => {
       }
       showSuccess("¡Login exitoso!");
       setTimeout(() => {
-        navigate("/adverts");
+        navigate("/adverts", { replace: true });
       }, 2000);
     } catch (error) {
       showError("Credenciales incorrectas.");
@@ -135,6 +135,4 @@ export const LoginPage = () => {
       </p>
     </div>
   );
-}
-
-export default LoginPage;
+};
