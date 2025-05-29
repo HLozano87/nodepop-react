@@ -1,12 +1,13 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
-import { Button } from "../components/button";
-import { createUser } from "../api/client";
+import { Button } from "../../components/button";
+import { createdUser } from "./service";
 import { useNavigate } from "react-router";
-import { useMessages } from "../components/hooks/useMessage";
-import { Notifications } from "../components/notifications";
+import { useMessages } from "../../components/hooks/useMessage";
+import { Notifications } from "../../components/notifications";
+import { REGEXP } from "../../utils/constants";
 
 export const SignUpPage = () => {
-const { successMessage, errorMessage, showSuccess, showError } =
+  const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
 
   //TODO Component form
@@ -19,9 +20,15 @@ const { successMessage, errorMessage, showSuccess, showError } =
     confirmPassword: "",
   });
 
+
   const handleChange = ({
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) => {
+    if (name === "email") {
+      if (!REGEXP.email.test(value)) {
+        showError("El email no es válido.");
+      }
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -35,9 +42,13 @@ const { successMessage, errorMessage, showSuccess, showError } =
       showError("Las contraseñas no coinciden.");
       return;
     }
+
+    if (!formData.name || formData.username || formData.email) {
+      showError("Por favor rellene todos los campos.");
+    }
     try {
       const { confirmPassword, ...dataSend } = formData;
-      await createUser(dataSend);
+      await createdUser(dataSend);
       showSuccess("Usuario creado con éxito");
 
       setTimeout(() => {
@@ -51,31 +62,34 @@ const { successMessage, errorMessage, showSuccess, showError } =
   return (
     <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
       <h2 className="mb-6 text-center text-2xl font-bold text-emerald-700">
-        Registro
+        Registrarse
       </h2>
 
-      <Notifications successMessage={successMessage} errorMessage={errorMessage} />
+      <Notifications
+        successMessage={successMessage}
+        errorMessage={errorMessage}
+      />
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label
             htmlFor="name"
             className="text-sm font-medium text-emerald-900"
           >
-            Nombre
+            Nombre <span className="text-red-600">*</span>
           </label>
           <input
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="text"
             id="name"
             name="name"
-            placeholder="Name"
+            placeholder="Nombre"
             onChange={handleChange}
           />
         </div>
 
         <div>
           <label
-            htmlFor="name"
+            htmlFor="username"
             className="text-sm font-medium text-emerald-900"
           >
             Nombre de usuario <span className="text-red-600">*</span>
@@ -148,7 +162,7 @@ const { successMessage, errorMessage, showSuccess, showError } =
         </div>
 
         <Button type="submit" variant="primary">
-          Crear
+          Registrar
         </Button>
       </form>
     </div>
