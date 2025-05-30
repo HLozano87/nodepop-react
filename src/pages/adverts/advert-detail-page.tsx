@@ -4,6 +4,8 @@ import type { Advert } from "./type-advert";
 import { getAdvert, deleteAdvert } from "./services";
 import { AxiosError } from "axios";
 import { Page } from "../../components/layout/page";
+import { useMessages } from "../../components/hooks/useMessage";
+import { Notifications } from "../../components/notifications";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,7 +13,9 @@ export const AdvertPage = () => {
   const [advert, setAdvert] = useState<Advert | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
+  const { successMessage, errorMessage, showSuccess, showError } =
+    useMessages();
 
   useEffect(() => {
     const fetchAdvert = async () => {
@@ -38,20 +42,21 @@ export const AdvertPage = () => {
 
   const cancelDelete = () => {
     setShowConfirm(false);
-    setError(null);
   };
 
   const confirmDelete = async () => {
     if (!id) return;
     setLoadingDelete(true);
-    setError(null);
 
     try {
       await deleteAdvert(id);
-      navigate("/adverts");
+      showSuccess("Anuncio borrado correctamente.");
+      setTimeout(() => {
+        navigate("/adverts", { replace: true });
+      }, 1000);
     } catch (error) {
-      setError("No se pudo borrar el anuncio. Intenta de nuevo.");
       setLoadingDelete(false);
+      showError("Error al borrar el anuncio. Intentalo mas tarde.");
     }
   };
 
@@ -62,15 +67,37 @@ export const AdvertPage = () => {
   return (
     <Page title="Detalle del anuncio">
       <div className="space-y-4">
-        <img
-          src={advert.photo || "/no-fotos.png"}
-          alt={advert.name || "Imagen del anuncio"}
-          className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
-          onError={(e) => {
-            e.currentTarget.onerror = null;
-            e.currentTarget.src = "/no-fotos.png";
-          }}
-        />
+        {!imageError && advert.photo ? (
+          <a
+            href={advert.photo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <img
+              src={advert.photo}
+              alt={advert.name || "Imagen del anuncio"}
+              className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = "/no-fotos.png";
+                setImageError(true);
+              }}
+            />
+          </a>
+        ) : (
+          <>
+            <img
+              src="/no-fotos.png"
+              alt="Sin imagen disponible"
+              className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
+            />
+            <p className="text-center text-sm text-gray-500">
+              Imagen del anuncio no disponible
+            </p>
+          </>
+        )}
+
         <h2 className="text-center text-2xl font-semibold text-emerald-900">
           {advert.name}
         </h2>
@@ -101,10 +128,13 @@ export const AdvertPage = () => {
           </div>
         ) : (
           <div className="mx-auto max-w-md rounded border border-gray-300 bg-gray-50 p-4 text-center shadow-md">
+            <Notifications
+              successMessage={successMessage}
+              errorMessage={errorMessage}
+            />
             <p className="mb-4 text-lg font-semibold text-gray-700">
               ¿Estás seguro que quieres borrar este anuncio?
             </p>
-            {error && <p className="mb-4 text-red-600">{error}</p>}
             <button
               className="mr-4 rounded bg-gray-300 px-5 py-2 text-gray-800 transition hover:bg-gray-400"
               onClick={cancelDelete}

@@ -82,7 +82,6 @@ export const LoginPage = () => {
             type="email"
             id="email"
             name="email"
-            value={credential.email}
             placeholder="Email"
             required
             onChange={handleChange}
@@ -101,7 +100,6 @@ export const LoginPage = () => {
             type="password"
             id="password"
             name="password"
-            value={credential.password}
             placeholder="Password"
             required
             onChange={handleChange}
