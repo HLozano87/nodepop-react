@@ -16,7 +16,7 @@ export const login = async (credentials: CredentialUser): Promise<string> => {
   return accessToken;
 };
 
-export const logout = () => {
+export const logout = async () => {
   storage.remove("auth");
   removeAuthorizationHeader();
 };

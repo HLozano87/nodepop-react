@@ -5,11 +5,14 @@ import { storage } from "../../utils/storage";
 import { useNavigate } from "react-router";
 import { Notifications } from "../../components/notifications";
 import { useMessages } from "../../components/hooks/useMessage";
+import { useAuth } from "./context";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
+
+  const { onLogin } = useAuth()
 
   const [credential, setCredentials] = useState(() => {
     const saved = storage.get("auth");
@@ -41,6 +44,9 @@ export const LoginPage = () => {
       } else {
         storage.remove("auth");
       }
+
+      onLogin()
+
       showSuccess("¡Login exitoso!");
       setTimeout(() => {
         navigate("/adverts", { replace: true });

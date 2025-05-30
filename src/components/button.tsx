@@ -9,6 +9,7 @@ export const Button = ({
   className,
   variant,
   disabled,
+  onClick,
   ...props
 }: ButtonProps) => {
   return (
@@ -18,6 +19,7 @@ export const Button = ({
         "cursor-pointer": !disabled,
       })}
       disabled={disabled}
+      onClick={onClick}
       {...props}
     >
       {children}
