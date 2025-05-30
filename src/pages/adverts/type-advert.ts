@@ -1,11 +1,6 @@
-export interface Advert {
+export interface Advert extends AdvertPayload {
   id: string;
   createdAt: string;
-  name: string;
-  price: number;
-  tags: string[];
-  sale: boolean;
-  photo?: string;
 }
 
 export interface AdvertPayload {
