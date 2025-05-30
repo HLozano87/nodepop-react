@@ -7,8 +7,8 @@ export const getAdvertsList = async (): Promise<Advert[]> => {
   return response.data;
 };
 
-export const getAdvert = async (advertId: string): Promise<Advert[]> => {
-  const response = await apiClient.get<Advert[]>(
+export const getAdvert = async (advertId: string): Promise<Advert> => {
+  const response = await apiClient.get<Advert>(
     `${ADVERT_ENDPOINT.ADVERT_ID(advertId)}`,
   );
   return response.data;
@@ -19,21 +19,19 @@ export const getAdvertTags = async (): Promise<string[]> => {
   return response.data;
 };
 
-export const createAdvert = async ({
-  name,
-  price,
-  tags,
-  sale,
-  createdAt,
-  photo,
-}: Advert): Promise<Advert> => {
-  const response = await apiClient.post<Advert>(ADVERT_ENDPOINT.ADVERT, {
-    name,
-    price,
-    tags,
-    sale,
-    createdAt,
-    photo,
-  });
+export const createdAdvert = async (payload: FormData): Promise<Advert> => {
+  const response = await apiClient.post<Advert>(
+    ADVERT_ENDPOINT.ADVERT,
+    payload,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
   return response.data;
+};
+
+export const deleteAdvert = async (id: string): Promise<void> => {
+  await apiClient.delete<Advert[]>(ADVERT_ENDPOINT.ADVERT_ID(id));
 };

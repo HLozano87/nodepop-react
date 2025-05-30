@@ -10,12 +10,19 @@
 }
 
 .btn-primary {
-  @apply mx-auto block cursor-pointer rounded-xl bg-[var(--btn-primary-color)] px-6 py-1.5 text-white transition duration-300 hover:bg-emerald-600;
-  /* @apply mt-4 cursor-pointer rounded-[20px] bg-[var(--btn-primary-color)] px-5 py-[5px] text-[var(--text-color)] transition-all duration-200 ease-in-out hover:bg-[var(--primary-color)] active:scale-95; */
+  @apply mx-auto block rounded-xl bg-[var(--btn-primary-color)] px-6 py-1.5 text-white transition duration-300 hover:bg-emerald-600;
+}
+
+.btn-primary:disabled {
+  @apply bg-gray-400 text-gray-200;
 }
 
 .btn-secondary {
-  @apply mt-4 cursor-pointer rounded-[20px] bg-[var(--btn-secondary-color)] px-5 py-[5px] text-[var(--text-color)] transition-colors duration-200 ease-in-out hover:bg-[var(--btn-primary-color)];
+  @apply mt-4 rounded-[20px] bg-[var(--btn-secondary-color)] px-5 py-[5px] text-[var(--text-color)] transition-colors duration-200 ease-in-out hover:bg-[var(--btn-primary-color)];
+}
+
+.btn-secondary:disabled {
+  @apply bg-gray-400 text-gray-200;
 }
 
 .required {

@@ -1,14 +1,25 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "../../components/button";
-import { getAdvertTags } from "./services";
+import { createdAdvert, getAdvertTags } from "./services";
 import { useMessages } from "../../components/hooks/useMessage";
 import { Notifications } from "../../components/notifications";
+import type { AdvertPayload } from "./type-advert";
+import { useNavigate } from "react-router";
 
-export const CreateAdvertPage = () => {
+export const NewAdvertPage = () => {
+  const [formData, setFormData] = useState<AdvertPayload>({
+    name: "",
+    price: 0,
+    tags: [],
+    sale: false,
+    photo: "",
+  });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getTags = async () => {
@@ -24,27 +35,67 @@ export const CreateAdvertPage = () => {
     );
   };
 
-  // Wip
-  function handleForm(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
+  const isFormValid =
+    formData.name.trim() !== "" &&
+    formData.price > 0 &&
+    selectedTags.length > 0 &&
+    (formData.sale === true || formData.sale === false);
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const payload: AdvertPayload = {
+        ...formData,
+        tags: selectedTags,
+      };
+
+      // TODO mejor usar event.target.formData?
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", payload.name);
+      formDataToSend.append("price", String(payload.price));
+      formDataToSend.append("sale", String(payload.sale));
+      payload.tags.forEach((tag) => formDataToSend.append("tags", tag));
+      if (photoFile) {
+        formDataToSend.append("photo", photoFile);
+      }
+
+      const newAdvert = await createdAdvert(formDataToSend);
+
+      showSuccess("¡Anuncio creado con éxito!");
+
+      setTimeout(() => {
+        navigate(`/adverts/${newAdvert.id}`, { replace: true });
+      }, 2000);
     } catch (error) {
-      showError("Ooops algo ha salido mal...");
+      showError("Ooops, algo ha salido mal...");
     }
-    showSuccess("¡Anuncio creado con exito!");
-  }
-  // Wip
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const {name }
-  }
+  };
+
+  const handleChange = ({
+    target: { name, value, type, files },
+  }: ChangeEvent<HTMLInputElement>) => {
+    if (type === "file" && files) {
+      setPhotoFile(files[0]);
+    } else if (name === "price") {
+      setFormData((prev) => ({ ...prev, price: parseFloat(value) }));
+    } else if (name === "sale") {
+      setFormData((prev) => ({ ...prev, sale: value === "Venta" }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
   return (
     <div className="rounded-2xl bg-white p-8 px-[3rem] shadow-lg">
       <h1 className="mb-6 text-center text-2xl font-bold text-emerald-700">
         Crear Anuncio
       </h1>
-      <form onSubmit={handleForm} className="space-y-5" encType="multipart/form-data">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5"
+        encType="multipart/form-data"
+      >
         <Notifications
           successMessage={successMessage}
           errorMessage={errorMessage}
@@ -62,6 +113,8 @@ export const CreateAdvertPage = () => {
             name="name"
             id="name"
             required
+            value={formData.name}
+            onChange={handleChange}
           />
         </div>
 
@@ -76,7 +129,9 @@ export const CreateAdvertPage = () => {
             id="price"
             min={0}
             step="0.01"
+            value={formData.price}
             required
+            onChange={handleChange}
           />
         </div>
 
@@ -115,10 +170,12 @@ export const CreateAdvertPage = () => {
               <input
                 className="rounded text-blue-500 focus:ring-blue-500"
                 type="radio"
-                name="isPurchase"
+                name="sale"
                 id="compra"
                 value="Compra"
                 required
+                checked={formData.sale === true}
+                onChange={handleChange}
               />
               <span className="mb-1 rounded-full bg-emerald-100 px-3 text-[1rem] font-medium text-emerald-800">
                 Compra
@@ -131,9 +188,12 @@ export const CreateAdvertPage = () => {
               <input
                 className="rounded text-blue-500 focus:ring-blue-500"
                 type="radio"
-                name="isPurchase"
+                name="sale"
                 id="venta"
                 value="Venta"
+                checked={formData.sale === false}
+                onChange={handleChange}
+                required
               />
               <span className="mb-1 rounded-full bg-blue-100 px-3 text-[1rem] font-medium text-blue-800">
                 Venta
@@ -165,14 +225,24 @@ export const CreateAdvertPage = () => {
                   d="M3 15a4 4 0 00.88 2.51A4 4 0 007 19h10a4 4 0 004-4 4 4 0 00-.88-2.51M15 10l-3-3m0 0l-3 3m3-3v12"
                 />
               </svg>
-              <span>Haz clic para subir una imagen</span>
-              <input id="photo" name="photo" type="file" className="hidden" />
+              <span>
+                {photoFile
+                  ? `Imagen seleccionada: ${photoFile.name}`
+                  : `Haz click para subir una imagen`}
+              </span>
+              <input
+                id="photo"
+                name="photo"
+                type="file"
+                className="hidden"
+                onChange={handleChange}
+              />
             </label>
           </div>
         </div>
 
         <div className="text-center">
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" disabled={!isFormValid}>
             Publicar anuncio
           </Button>
         </div>
