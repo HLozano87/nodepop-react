@@ -8,7 +8,7 @@ interface PagePros {
 export const Page = ({ title, children }: PagePros) => {
   return (
     <>
-      <h1 className="mb-6 text-center text-3xl font-bold text-emerald-900">
+      <h1 className="title">
         {title}
       </h1>
       {children}

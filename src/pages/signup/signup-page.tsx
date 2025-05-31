@@ -20,13 +20,14 @@ export const SignUpPage = () => {
     confirmPassword: "",
   });
 
-
   const handleChange = ({
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) => {
     if (name === "email") {
       if (!REGEXP.email.test(value)) {
         showError("El email no es válido.");
+      } else {
+        showError("");
       }
     }
     setFormData((prev) => ({
@@ -34,6 +35,12 @@ export const SignUpPage = () => {
       [name]: value,
     }));
   };
+
+  const isFormValid =
+    formData.name.trim() !== "" &&
+    REGEXP.email.test(formData.email) &&
+    formData.username.trim().length >= 4 &&
+    formData.password.trim() !== "";
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,27 +50,27 @@ export const SignUpPage = () => {
       return;
     }
 
-    if (!formData.name || formData.username || formData.email) {
+    if (!formData.name || !formData.username || !formData.email) {
       showError("Por favor rellene todos los campos.");
+      return;
     }
     try {
       const { confirmPassword, ...dataSend } = formData;
       await createdUser(dataSend);
+
       showSuccess("Usuario creado con éxito");
 
       setTimeout(() => {
         navigate(`/adverts`, { replace: true });
       }, 2000);
-    } catch (error) {
+    } catch (error: unknown) {
       showError("Error al crear el usuario.");
     }
   };
 
   return (
-    <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
-      <h2 className="mb-6 text-center text-2xl font-bold text-emerald-700">
-        Registrarse
-      </h2>
+    <div className="mx-auto max-w-sm rounded-2xl bg-white p-8 shadow-lg">
+      <h1 className="title">Registrarse</h1>
 
       <Notifications
         successMessage={successMessage}
@@ -94,14 +101,23 @@ export const SignUpPage = () => {
           >
             Nombre de usuario <span className="text-red-600">*</span>
           </label>
+
           <input
             className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
             type="text"
             id="username"
             name="username"
+            minLength={4}
+            value={formData.username}
             placeholder="username"
             onChange={handleChange}
           />
+          {formData.username.trim().length > 0 &&
+            formData.username.length < 4 && (
+              <p className="text-sm text-red-600">
+                El username debe tener minimo 4 caracteres
+              </p>
+            )}
         </div>
 
         <div>
@@ -161,7 +177,7 @@ export const SignUpPage = () => {
           />
         </div>
 
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" disabled={!isFormValid}>
           Registrar
         </Button>
       </form>

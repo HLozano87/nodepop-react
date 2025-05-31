@@ -37,16 +37,17 @@ export const Header = () => {
       : "pb-1 transition hover:border-b-2 hover:border-emerald-500";
 
   return (
-    <header className="mx-auto max-w-5xl rounded-b-2xl bg-white px-6 py-4 shadow-md">
-      <nav className="flex items-center justify-between">
+    <header className="w-full bg-white px-4 py-4 shadow-md sm:px-6 md:px-8">
+      <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
         <NavLink
           to="/"
-          className="cursor-pointer text-2xl font-bold text-emerald-700 select-none"
+          className="flex cursor-pointer items-center gap-2 select-none"
         >
-          <img src="/logo.svg" alt="Logo Nodepop" className="h-10 px-2" />
+          <img src="/logo.svg" alt="Logo Nodepop" className="h-10" />
+          <span className="sr-only">Nodepop</span>
         </NavLink>
 
-        <ul className="flex items-center space-x-8 text-lg font-semibold text-emerald-700">
+        <ul className="flex flex-wrap items-center gap-4 text-base font-medium text-emerald-700 sm:gap-6 md:gap-8 md:text-lg">
           {isLogged && (
             <li>
               <NavLink to="/adverts/new" end className={getNavLinkClass}>

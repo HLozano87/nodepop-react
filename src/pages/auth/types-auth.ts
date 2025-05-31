@@ -19,6 +19,7 @@ export interface AuthUser extends User {
 export interface CredentialUser {
   email: string;
   password: string;
+  remember?: boolean
 }
 
 export interface Jwt {

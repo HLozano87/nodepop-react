@@ -2,19 +2,20 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { login } from "./service";
 import { Button } from "../../components/button";
 import { storage } from "../../utils/storage";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { Notifications } from "../../components/notifications";
 import { useMessages } from "../../components/hooks/useMessage";
 import { useAuth } from "./context";
+import type { CredentialUser } from "./types-auth";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
 
-  const { onLogin } = useAuth()
+  const { onLogin } = useAuth();
 
-  const [credential, setCredentials] = useState(() => {
+  const [credential, setCredentials] = useState<CredentialUser>(() => {
     const saved = storage.get("auth");
     if (saved) {
       try {
@@ -35,6 +36,9 @@ export const LoginPage = () => {
     };
   });
 
+  const isLoginValid =
+    credential.email.trim() !== "" && credential.password.trim() !== "";
+
   async function handleForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
@@ -45,14 +49,19 @@ export const LoginPage = () => {
         storage.remove("auth");
       }
 
-      onLogin()
+      onLogin();
 
       showSuccess("¡Login exitoso!");
       setTimeout(() => {
         navigate("/adverts", { replace: true });
-      }, 2000);
+      }, 1000);
     } catch (error) {
       showError("Credenciales incorrectas.");
+      setCredentials((prev) => ({
+        ...prev,
+        email: "",
+        password: "",
+      }));
     }
   }
 
@@ -66,10 +75,10 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
-      <h2 className="title mb-6 text-center text-2xl font-bold text-emerald-700">
+    <div className="mx-auto max-w-sm rounded-2xl bg-white p-8 shadow-lg">
+      <h1 className="title mb-6 text-center text-2xl font-bold text-emerald-700">
         Login
-      </h2>
+      </h1>
 
       <form onSubmit={handleForm} className="space-y-5">
         <div>
@@ -91,6 +100,7 @@ export const LoginPage = () => {
             placeholder="Email"
             required
             onChange={handleChange}
+            value={credential.email}
           />
         </div>
 
@@ -108,6 +118,7 @@ export const LoginPage = () => {
             name="password"
             placeholder="Password"
             required
+            value={credential.password}
             onChange={handleChange}
           />
         </div>
@@ -122,20 +133,20 @@ export const LoginPage = () => {
               checked={credential.remember}
               onChange={handleChange}
             />
-            Recordarme.
+            Recuérdame
           </label>
         </div>
 
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" disabled={!isLoginValid}>
           Entrar
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-emerald-900">
         ¿No tienes cuenta?
-        <a href="/signup" className="text-emerald-600 hover:underline">
-          <span className="px-2">Crear cuenta</span>
-        </a>
+        <Link to="/signup" className="text-emerald-600 hover:underline">
+          <span className="px-2">Regístrate</span>
+        </Link>
       </p>
     </div>
   );
