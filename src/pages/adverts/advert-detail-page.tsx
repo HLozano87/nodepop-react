@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import { Page } from "../../components/layout/page";
 import { useMessages } from "../../components/hooks/useMessage";
 import { Notifications } from "../../components/notifications";
+import { Button } from "../../components/button";
 
 export const AdvertPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,9 +19,11 @@ export const AdvertPage = () => {
     useMessages();
 
   useEffect(() => {
+    if(!id) {
+      navigate('/not-found', {replace:true})
+      return
+    }
     const fetchAdvert = async () => {
-      if (!id) return;
-
       try {
         const data = await getAdvert(id);
         setAdvert(data);
@@ -36,33 +39,28 @@ export const AdvertPage = () => {
     fetchAdvert();
   }, [id, navigate]);
 
-  const handleDeleteClick = () => {
-    setShowConfirm(true);
-  };
+  if (!advert) {
+    return <p className="py-8 text-center">Cargando anuncio...</p>;
+  }
 
-  const cancelDelete = () => {
-    setShowConfirm(false);
-  };
+  const handleDeleteClick = () => setShowConfirm(true);
+  const cancelDelete = () => setShowConfirm(false);
 
   const confirmDelete = async () => {
     if (!id) return;
     setLoadingDelete(true);
-
     try {
       await deleteAdvert(id);
       showSuccess("Anuncio borrado correctamente.");
+      setLoadingDelete(false)
       setTimeout(() => {
         navigate("/adverts", { replace: true });
       }, 1000);
     } catch (error) {
       setLoadingDelete(false);
-      showError("Error al borrar el anuncio. Intentalo mas tarde.");
+      showError("Error al borrar el anuncio. Inténtalo más tarde.");
     }
   };
-
-  if (!advert) {
-    return <p className="py-8 text-center">Cargando anuncio...</p>;
-  }
 
   return (
     <Page title="Detalle del anuncio">
@@ -93,7 +91,7 @@ export const AdvertPage = () => {
               className="mx-auto max-h-[300px] w-full max-w-md rounded-xl object-contain"
             />
             <p className="text-center text-sm text-gray-500">
-              Imagen del anuncio no disponible
+              Imagen del anuncio {advert.name} no disponible
             </p>
           </>
         )}
@@ -119,12 +117,9 @@ export const AdvertPage = () => {
 
         {!showConfirm ? (
           <div className="text-center">
-            <button
-              className="rounded bg-red-600 px-6 py-2 text-white transition hover:bg-red-700"
-              onClick={handleDeleteClick}
-            >
+            <Button variant="secondary" onClick={handleDeleteClick}>
               Borrar anuncio
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="mx-auto max-w-md rounded border border-gray-300 bg-gray-50 p-4 text-center shadow-md">
@@ -135,20 +130,20 @@ export const AdvertPage = () => {
             <p className="mb-4 text-lg font-semibold text-gray-700">
               ¿Estás seguro que quieres borrar este anuncio?
             </p>
-            <button
+            <Button
               className="mr-4 rounded bg-gray-300 px-5 py-2 text-gray-800 transition hover:bg-gray-400"
               onClick={cancelDelete}
               disabled={loadingDelete}
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               className="rounded bg-red-600 px-5 py-2 text-white transition hover:bg-red-700"
               onClick={confirmDelete}
               disabled={loadingDelete}
             >
               {loadingDelete ? "Borrando..." : "Confirmar"}
-            </button>
+            </Button>
           </div>
         )}
       </div>

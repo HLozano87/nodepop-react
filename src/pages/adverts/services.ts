@@ -3,7 +3,7 @@ import { ADVERT_ENDPOINT } from "../../utils/endpoints";
 import type { Advert } from "./type-advert";
 
 export const getAdvertsList = async (): Promise<Advert[]> => {
-  const response = await apiClient.get<Advert[]>(ADVERT_ENDPOINT.ADVERT);
+  const response = await apiClient.get<Advert[]>(`${ADVERT_ENDPOINT.ADVERT}`);
   return response.data;
 };
 

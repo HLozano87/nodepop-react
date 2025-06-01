@@ -1,7 +1,3 @@
-// import type { ReactNode } from "react";
-// import { Navigate, useLocation } from "react-router";
-// import { useAuth } from "./context";
-
 import type { ReactNode } from "react";
 import { useAuth } from "./context";
 import { Navigate, useLocation } from "react-router-dom";

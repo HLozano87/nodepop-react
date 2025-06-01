@@ -71,6 +71,7 @@ export const LoginPage = () => {
     setCredentials((prevCredentials) => ({
       ...prevCredentials,
       [name]: type === "checkbox" ? checked : value,
+      ...(name === "email" ? {password: ''} : '')
     }));
   }
 

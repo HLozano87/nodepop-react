@@ -12,20 +12,34 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {/* Rutas públicas */}
+        {/* Públicas */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
 
-        {/* Página principal */}
-        <Route index element={<AdvertsPage />} />
+        {/* Principal */}
+        <Route
+          index
+          element={
+            <AuthRoute requireAuth={true} redirectTo="/login">
+              <AdvertsPage />
+            </AuthRoute>
+          }
+        />
+        {/* Protegidas */}
         <Route path="/adverts" element={<Navigate to="/" replace />} />
-        <Route path="/adverts/:id" element={<AdvertPage />} />
+        <Route
+          path="/adverts/:id"
+          element={
+            <AuthRoute requireAuth={true} redirectTo="/login">
+              <AdvertPage />
+            </AuthRoute>
+          }
+        />
 
-        {/* Rutas protegidas */}
         <Route
           path="/adverts/new"
           element={
-            <AuthRoute requireAuth={true}>
+            <AuthRoute requireAuth={true} redirectTo="/login">
               <NewAdvertPage />
             </AuthRoute>
           }
