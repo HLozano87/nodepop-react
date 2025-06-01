@@ -118,6 +118,7 @@ export const LoginPage = () => {
             id="password"
             name="password"
             placeholder="Password"
+            autoComplete="off"
             required
             value={credential.password}
             onChange={handleChange}

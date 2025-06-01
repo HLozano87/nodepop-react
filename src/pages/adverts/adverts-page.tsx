@@ -51,8 +51,8 @@ export const AdvertsPage = () => {
 
     const matchesType =
       typeSaleFilter === "" ||
-      (typeSaleFilter === "sell" && advert.sale) ||
-      (typeSaleFilter === "buy" && !advert.sale);
+      (typeSaleFilter === "sell" && !advert.sale) ||
+      (typeSaleFilter === "buy" && advert.sale);
 
     const matchesMinPrice =
       priceMin === "" || advert.price >= parseFloat(priceMin);
