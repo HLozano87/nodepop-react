@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+# Nodepop with React, TypeScript and Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -6,6 +6,22 @@ Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Backend
+For the backend you will need to clone **[Nodepop-api](https://github.com/davidjj76/nodepop-api.git)** beforehand.
+
+Install the dependencies:
+
+```
+cd nodepop-api
+npm install
+```
+
+Initialize it by doing `npm start`
+
+The server will run by default at http://localhost:3001/swagger
+
+Make sure the backend is running properly before using the frontend application.
 
 ## Expanding the ESLint configuration
 
