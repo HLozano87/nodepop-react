@@ -7,11 +7,16 @@ import { Notifications } from "../../components/notifications";
 import { useMessages } from "../../components/hooks/useMessage";
 import { useAuth } from "./context";
 import type { CredentialUser } from "./types-auth";
+import clsx from "clsx";
+import { EyeShow, EyeHide } from "../../components/icons/eyes";
+import { SpinnerLoadingText } from "../../components/icons/spinner";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { successMessage, errorMessage, showSuccess, showError } =
     useMessages();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { onLogin } = useAuth();
 
@@ -39,8 +44,9 @@ export const LoginPage = () => {
   const isLoginValid =
     credential.email.trim() !== "" && credential.password.trim() !== "";
 
-  async function handleForm(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsLoading(true);
     try {
       const token = await login(credential);
       if (credential.remember) {
@@ -62,6 +68,8 @@ export const LoginPage = () => {
         email: "",
         password: "",
       }));
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -71,7 +79,7 @@ export const LoginPage = () => {
     setCredentials((prevCredentials) => ({
       ...prevCredentials,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === "email" ? {password: ''} : '')
+      ...(name === "email" ? { password: "" } : ""),
     }));
   }
 
@@ -81,7 +89,7 @@ export const LoginPage = () => {
         Login
       </h1>
 
-      <form onSubmit={handleForm} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <Notifications
             successMessage={successMessage}
@@ -110,19 +118,38 @@ export const LoginPage = () => {
             htmlFor="password"
             className="block text-sm font-medium text-emerald-900"
           >
-            Password
+            Contraseña
           </label>
-          <input
-            className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Password"
-            autoComplete="off"
-            required
-            value={credential.password}
-            onChange={handleChange}
-          />
+          <div className="relative">
+            <input
+              className="mt-1 w-full rounded-xl border px-4 py-2 text-center text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              placeholder="Password"
+              autoComplete="off"
+              required
+              value={credential.password}
+              onChange={handleChange}
+            />
+            <Button
+              type="button"
+              className={clsx(
+                "absolute top-1/2 right-3 text-gray-400 transition-colors",
+                "-translate-y-1/3",
+                showPassword && "hover:text-emerald-600",
+                !showPassword && "hover:text-rose-600",
+              )}
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={isLoading}
+              aria-label={
+                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+              }
+              title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            >
+              {showPassword ? <EyeHide /> : <EyeShow />}
+            </Button>
+          </div>
         </div>
 
         <div className="input-login flex items-center justify-between text-sm">
@@ -139,8 +166,18 @@ export const LoginPage = () => {
           </label>
         </div>
 
-        <Button type="submit" variant="primary" disabled={!isLoginValid}>
-          Entrar
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={!isLoginValid || isLoading}
+          aria-label="Iniciar sesión"
+          title="Iniciar sesión"
+        >
+          {isLoading ? ( 
+            <SpinnerLoadingText text="Iniciando sesión..."/>
+          ) : (
+            "Iniciar sesión"
+          )}
         </Button>
       </form>
 
