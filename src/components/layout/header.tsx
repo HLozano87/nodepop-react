@@ -14,6 +14,7 @@ export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const [logoutConfirm, setLogoutConfirm] = useState(false);
 
   const handleLoginClick = () => {
     if (location.pathname !== "/login") {
@@ -26,8 +27,10 @@ export const Header = () => {
       setLoadingLogout(true);
       await logout();
       onLogout();
+      navigate("/");
     } finally {
       setLoadingLogout(false);
+      setLogoutConfirm(false);
     }
   };
 
@@ -68,7 +71,7 @@ export const Header = () => {
             {isLogged ? (
               <Button
                 variant="secondary"
-                onClick={handleLogoutClick}
+                onClick={() => setLogoutConfirm(true)}
                 disabled={loadingLogout}
               >
                 {loadingLogout ? "Cerrando sesión..." : "Logout"}
@@ -85,6 +88,31 @@ export const Header = () => {
           </li>
         </ul>
       </nav>
+      {logoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm">
+          <div className="mx-auto max-w-md rounded border border-gray-300 bg-gray-50 p-4 text-center shadow-md">
+            <p className="mb-4 text-lg font-semibold text-gray-700">
+              ¿Estás seguro que deseas cerrar sesión?
+            </p>
+            <div className="flex justify-center gap-4">
+              <Button
+                className="rounded-2xl bg-gray-300 p-1.5 text-gray-800 hover:bg-gray-400"
+                onClick={() => setLogoutConfirm(false)}
+                disabled={loadingLogout}
+              >
+                Cancelar
+              </Button>
+              <Button
+                className="rounded-2xl bg-red-600 p-1.5 text-white hover:bg-red-700"
+                onClick={handleLogoutClick}
+                disabled={loadingLogout}
+              >
+                {loadingLogout ? "Cerrando..." : "Confirmar"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
