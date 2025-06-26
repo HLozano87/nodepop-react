@@ -6,7 +6,7 @@ import { LoginPage } from "./pages/auth/login-page";
 import { AuthRoute } from "./pages/auth/require-auth";
 import NotFoundPage from "./pages/not-found";
 import { SignUpPage } from "./pages/signup/signup-page";
-import { Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate, Outlet } from "react-router";
 
 function App() {
   return (
@@ -26,24 +26,18 @@ function App() {
           }
         />
         {/* Protegidas */}
-        <Route path="/adverts" element={<Navigate to="/" replace />} />
         <Route
-          path="/adverts/:id"
+          path="/adverts"
           element={
             <AuthRoute requireAuth={true} redirectTo="/login">
-              <AdvertPage />
+              <Outlet />
             </AuthRoute>
           }
-        />
-
-        <Route
-          path="/adverts/new"
-          element={
-            <AuthRoute requireAuth={true} redirectTo="/login">
-              <NewAdvertPage />
-            </AuthRoute>
-          }
-        />
+        >
+          <Route index element={<Navigate to="/" replace />} />
+          <Route path=":id" element={<AdvertPage />} />
+          <Route path="new" element={<NewAdvertPage />} />
+        </Route>
 
         {/* Errores */}
         <Route path="/not-found" element={<NotFoundPage />} />
