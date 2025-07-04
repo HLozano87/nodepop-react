@@ -68,7 +68,7 @@ To simplify configuration, rename the `.env.example` file to `.env` or create a 
 
 ```env
 # Base URL of the Nodepop API
-VITE_BASE_API_URL=http://localhost:3001
+VITE_BASE_URL_API=http://localhost:3001
 ```
 
 This way, other developers can copy `.env.example` to `.env` and adjust the URL according to their local or production environment.
