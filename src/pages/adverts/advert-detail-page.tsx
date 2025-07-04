@@ -53,9 +53,8 @@ export const AdvertPage = () => {
       await deleteAdvert(id);
       showSuccess("Anuncio borrado correctamente.");
       setLoadingDelete(false)
-      setTimeout(() => {
-        navigate("/adverts", { replace: true });
-      }, 1000);
+
+      navigate("/adverts", { replace: true });
     } catch (error) {
       setLoadingDelete(false);
       showError("Error al borrar el anuncio. Inténtalo más tarde.");

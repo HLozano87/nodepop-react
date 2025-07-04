@@ -59,10 +59,7 @@ export const SignUpPage = () => {
       await createdUser(dataSend);
 
       showSuccess("Usuario creado con éxito");
-
-      setTimeout(() => {
-        navigate(`/adverts`, { replace: true });
-      }, 2000);
+      navigate(`/adverts`, { replace: true });
     } catch (error: unknown) {
       showError("Error al crear el usuario.");
     }

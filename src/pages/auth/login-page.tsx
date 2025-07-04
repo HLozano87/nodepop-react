@@ -58,9 +58,7 @@ export const LoginPage = () => {
       onLogin();
 
       showSuccess("¡Login exitoso!");
-      setTimeout(() => {
-        navigate("/adverts", { replace: true });
-      }, 1000);
+      navigate("/adverts", { replace: true });
     } catch (error) {
       showError("Credenciales incorrectas.");
       setCredentials((prev) => ({

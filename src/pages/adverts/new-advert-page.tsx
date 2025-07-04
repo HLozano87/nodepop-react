@@ -64,9 +64,8 @@ export const NewAdvertPage = () => {
 
       showSuccess("¡Anuncio creado con éxito!");
 
-      setTimeout(() => {
-        navigate(`/adverts/${newAdvert.id}`, { replace: true });
-      }, 2000);
+      navigate(`/adverts/${newAdvert.id}`, { replace: true });
+
     } catch (error) {
       showError("Ooops, algo ha salido mal...");
     }
