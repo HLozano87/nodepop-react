@@ -132,7 +132,7 @@ export const SignUpPage = () => {
             id="email"
             name="email"
             placeholder="Email"
-            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            pattern="/^\w{4,}([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/"
             required
             onChange={handleChange}
           />
