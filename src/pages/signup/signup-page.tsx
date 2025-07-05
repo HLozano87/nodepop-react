@@ -55,12 +55,14 @@ export const SignUpPage = () => {
       return;
     }
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { confirmPassword, ...dataSend } = formData;
       await createdUser(dataSend);
 
       showSuccess("Usuario creado con éxito");
       navigate(`/adverts`, { replace: true });
     } catch (error: unknown) {
+      console.error("Error creating user:", error)
       showError("Error al crear el usuario.");
     }
   };
@@ -149,6 +151,7 @@ export const SignUpPage = () => {
             id="password"
             name="password"
             placeholder="Password"
+            autoComplete="false"
             minLength={6}
             required
             onChange={handleChange}
@@ -168,6 +171,7 @@ export const SignUpPage = () => {
             id="password-confirm"
             name="confirmPassword"
             placeholder="Confirm password"
+            autoComplete="false"
             minLength={6}
             required
             onChange={handleChange}

@@ -31,6 +31,7 @@ export const LoginPage = () => {
           remember: true,
         };
       } catch (error) {
+        console.error("Credentials not valid", error)
         showError(errorMessage);
       }
     }
@@ -60,6 +61,7 @@ export const LoginPage = () => {
       showSuccess("¡Login exitoso!");
       navigate("/adverts", { replace: true });
     } catch (error) {
+      console.error("Login error:", error)
       showError("Credenciales incorrectas.");
       setCredentials((prev) => ({
         ...prev,

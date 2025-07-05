@@ -67,6 +67,7 @@ export const NewAdvertPage = () => {
       navigate(`/adverts/${newAdvert.id}`, { replace: true });
 
     } catch (error) {
+      console.error("Something has gone wrong", error);
       showError("Ooops, algo ha salido mal...");
     }
   };

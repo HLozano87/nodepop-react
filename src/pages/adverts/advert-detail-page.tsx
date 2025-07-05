@@ -56,6 +56,7 @@ export const AdvertPage = () => {
 
       navigate("/adverts", { replace: true });
     } catch (error) {
+      console.error("Error to deleting advert.", error)
       setLoadingDelete(false);
       showError("Error al borrar el anuncio. Inténtalo más tarde.");
     }
