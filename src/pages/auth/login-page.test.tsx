@@ -288,6 +288,7 @@ describe('LoginPage', () => {
 
     it('should handle corrupted storage data gracefully', () => {
       mockStorage.get.mockReturnValue('invalid-json');
+      vi.spyOn(console, 'error').mockImplementation(() => {});
 
       renderLoginPage();
 
