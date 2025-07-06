@@ -15,10 +15,10 @@ export const NewAdvertPage = () => {
     photo: "",
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { successMessage, errorMessage, showSuccess, showError } =
-    useMessages();
+  const { successMessage, errorMessage, showSuccess, showError } = useMessages();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,6 +77,7 @@ export const NewAdvertPage = () => {
   }: ChangeEvent<HTMLInputElement>) => {
     if (type === "file" && files) {
       setPhotoFile(files[0]);
+      setPhotoPreview(URL.createObjectURL(files[0]));
     } else if (name === "price") {
       const parsedPrice = parseFloat(value);
       setFormData((prev) => ({
@@ -93,7 +94,7 @@ export const NewAdvertPage = () => {
   return (
     <div className="mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-lg">
       <h1 className="title">Crear Anuncio</h1>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
         <Notifications
           successMessage={successMessage}
           errorMessage={errorMessage}
@@ -229,11 +230,19 @@ export const NewAdvertPage = () => {
                   ? `Imagen seleccionada: ${photoFile.name}`
                   : `Haz click para subir una imagen`}
               </span>
+              {photoPreview && (
+                <img
+                  src={photoPreview}
+                  alt="Preview"
+                  className="mt-2 max-h-24 w-auto rounded-lg object-contain"
+                />
+              )}
               <input
                 id="photo"
                 name="photo"
                 type="file"
                 className="hidden"
+                accept="image/*"
                 onChange={handleChange}
               />
             </label>

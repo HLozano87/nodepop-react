@@ -1,7 +1,7 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Button } from "../../components/button";
 import { createdUser } from "./service";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useMessages } from "../../components/hooks/useMessage";
 import { Notifications } from "../../components/notifications";
 import { REGEXP } from "../../utils/constants";
@@ -90,6 +90,7 @@ export const SignUpPage = () => {
             name="name"
             placeholder="Nombre"
             onChange={handleChange}
+            pattern="^[a-zA-Z0-9]{4,}$"
           />
         </div>
 
