@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useState, type FormEvent, type ChangeEvent, type FocusEvent } from "react";
 import { Button } from "../../components/button";
 import { createdUser } from "./service";
 import { useNavigate } from "react-router-dom";
@@ -23,23 +23,35 @@ export const SignUpPage = () => {
   const handleChange = ({
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) => {
+    const newValue = name === "username" || name === "email" ? value.toLowerCase() : value;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
+  };
+
+  const handleBlur = ({
+    target: { name, value },
+  }: FocusEvent<HTMLInputElement>) => {
     if (name === "email") {
       if (!REGEXP.email.test(value)) {
         showError("El email no es válido.");
       } else {
         showError("");
       }
+    } else if (name === "username") {
+      if (!REGEXP.username.test(value)) {
+        showError("El nombre de usuario no es válido.");
+      } else {
+        showError("");
+      }
     }
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   const isFormValid =
     formData.name.trim() !== "" &&
-    REGEXP.email.test(formData.email) &&
-    formData.username.trim().length >= 4 &&
+    REGEXP.email.test(formData.email.trim()) &&
+    REGEXP.username.test(formData.username.trim()) &&
     formData.password.trim() !== "";
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -62,7 +74,7 @@ export const SignUpPage = () => {
       showSuccess("Usuario creado con éxito");
       navigate(`/adverts`, { replace: true });
     } catch (error: unknown) {
-      console.error("Error creating user:", error)
+      console.error("Error creating user:", error);
       showError("Error al crear el usuario.");
     }
   };
@@ -132,10 +144,12 @@ export const SignUpPage = () => {
             type="email"
             id="email"
             name="email"
+            value={formData.email}
             placeholder="Email"
             pattern="/^\w{4,}([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/"
             required
             onChange={handleChange}
+            onBlur={handleBlur}
           />
         </div>
 
