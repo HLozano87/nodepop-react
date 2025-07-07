@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.20.8, 20.19.3, 22.14.0] # Cambia a las versiones que quieras probar
+        node-version: [18.x, 20.x, 22.x] # Cambia a las versiones que quieras probar
 
     steps:
       # 1. Clona el código
@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          ${{ matrix.node-version }} # Usa tu versión de Node
+          node-version: ${{ matrix.node-version }} # Usa tu versión de Node
 
       # 3. Cachea dependencias para acelerar builds
       - name: Cache node_modules
